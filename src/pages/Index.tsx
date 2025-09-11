@@ -1,12 +1,44 @@
-// Update this page (the content is just a fallback if you fail to update the page)
+import { useState } from 'react';
+import { DashboardHeader } from '@/components/dashboard/DashboardHeader';
+import { AlertsSection } from '@/components/dashboard/AlertsSection';
+import { DocumentGrid } from '@/components/dashboard/DocumentGrid';
+import { FilterBar } from '@/components/dashboard/FilterBar';
+import { RoleDashboard } from '@/components/dashboard/RoleDashboard';
+
+export type UserRole = 'station-controller' | 'engineer' | 'procurement' | 'hr' | 'executive';
 
 const Index = () => {
+  const [currentRole, setCurrentRole] = useState<UserRole>('station-controller');
+  const [searchQuery, setSearchQuery] = useState('');
+  const [activeFilters, setActiveFilters] = useState<string[]>([]);
+
   return (
-    <div className="flex min-h-screen items-center justify-center bg-background">
-      <div className="text-center">
-        <h1 className="mb-4 text-4xl font-bold">Welcome to Your Blank App</h1>
-        <p className="text-xl text-muted-foreground">Start building your amazing project here!</p>
-      </div>
+    <div className="min-h-screen bg-background">
+      <DashboardHeader 
+        currentRole={currentRole} 
+        onRoleChange={setCurrentRole} 
+      />
+      
+      <main className="container mx-auto px-4 py-6 space-y-6">
+        {/* Alerts Section - Always visible */}
+        <AlertsSection role={currentRole} />
+        
+        {/* Search and Filters */}
+        <FilterBar 
+          searchQuery={searchQuery}
+          onSearchChange={setSearchQuery}
+          activeFilters={activeFilters}
+          onFiltersChange={setActiveFilters}
+          role={currentRole}
+        />
+        
+        {/* Role-specific Dashboard */}
+        <RoleDashboard 
+          role={currentRole}
+          searchQuery={searchQuery}
+          activeFilters={activeFilters}
+        />
+      </main>
     </div>
   );
 };
